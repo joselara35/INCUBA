@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_login.xml" value="0.2296195652173913" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_splash_screen.xml" value="0.264" />
       </map>
     </option>
   </component>
