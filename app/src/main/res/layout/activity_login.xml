@@ -66,9 +66,10 @@
                 android:background="@drawable/editext_fondo"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="# de móvil"
-                android:inputType="number"
+                android:hint="Usuario"
+                android:inputType="textPersonName"
                 android:padding="5dp"
+                android:text="jose"
                 android:paddingStart="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="#B5B4B4" />
@@ -82,11 +83,12 @@
                 android:background="@drawable/editext_fondo"
                 android:ems="10"
                 android:gravity="center"
-                android:hint="PIN de acceso"
-                android:inputType="numberPassword"
+                android:hint="Clave de acceso"
+                android:inputType="textPassword"
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:textColor="@color/black"
+                android:text="Cuba.2023*"
                 android:textColorHint="#B5B4B4" />
 
             <Button
