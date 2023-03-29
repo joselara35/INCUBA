@@ -7,6 +7,40 @@
     android:background="@drawable/fondo_login"
     tools:context=".Login">
 
+    <TextView
+        android:id="@+id/txt_error"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/myriadpro_blacksemicn"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/txt_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView2"
+        app:layout_constraintVertical_bias="0.048" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_espera2"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/txt_version"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
+        app:layout_constraintVertical_bias="0.878"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/egg_animation" />
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="300dp"
@@ -25,6 +59,7 @@
         android:layout_marginBottom="32dp"
         android:text="Versión 1.0 beta"
         android:textSize="18sp"
+        android:fontFamily="@font/myriadpro_blacksemicn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -55,6 +90,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
                 android:text="Acceso"
+                android:fontFamily="@font/myriadpro_blacksemicn"
                 android:textAlignment="center"
                 android:textSize="25dp" />
 
@@ -66,6 +102,7 @@
                 android:background="@drawable/editext_fondo"
                 android:ems="10"
                 android:gravity="center"
+                android:fontFamily="@font/bellmtbold"
                 android:hint="Usuario"
                 android:inputType="textPersonName"
                 android:padding="5dp"
@@ -83,6 +120,7 @@
                 android:background="@drawable/editext_fondo"
                 android:ems="10"
                 android:gravity="center"
+                android:fontFamily="@font/bellmtbold"
                 android:hint="Clave de acceso"
                 android:inputType="textPassword"
                 android:padding="5dp"
@@ -100,6 +138,7 @@
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/boton_redondo_n"
                 android:text="Entrar"
+                android:fontFamily="@font/myriadpro_blacksemicn"
                 android:textColor="@color/white"
                 android:textSize="18sp"
                 app:backgroundTint="@color/naranja" />

@@ -38,6 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="1"
+                android:fontFamily="@font/myriadpro_blacksemicn"
                 android:gravity="center_vertical"
                 android:text="Obrero"
                 android:textSize="20dp" />
@@ -65,6 +66,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="20dp"
                 android:layout_weight="1"
+                android:fontFamily="@font/myriadpro_blacksemicn"
                 android:text="Ubicacion de incubadora" />
         </LinearLayout>
     </LinearLayout>

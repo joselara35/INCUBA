@@ -7,7 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.incuba.app.API.ApiService
 import com.incuba.app.API.respuestaLogin
 import com.incuba.app.databinding.ActivityLoginBinding
@@ -17,6 +19,7 @@ import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
@@ -34,7 +37,8 @@ class Login : AppCompatActivity() {
         setContentView(R.layout.activity_login)
         binding= ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        var versionName : String = applicationContext.packageManager.getPackageInfo(packageName, 0).versionName
+        binding.txtVersion.setText("Versión $versionName")
         //---------------------------------------------------------------
         binding.btnEntrar.setOnClickListener {
             //startActivity(Intent(this,MainActivity::class.java))
@@ -51,7 +55,7 @@ class Login : AppCompatActivity() {
                     Toast.makeText(this,"Entre los datos requeridos",Toast.LENGTH_SHORT).show()
 
                 } else {
-                        //loadingdialog.startLoadingdialog()
+                        establecer_espera()
                         LoginApi()
                 }
             } else {
@@ -62,6 +66,19 @@ class Login : AppCompatActivity() {
 
         }
     }
+
+    private fun establecer_espera() {
+        binding.animationEspera2.visibility=View.VISIBLE
+        binding.btnEntrar.background.setTint(ContextCompat.getColor(this, R.color.grisOscuro))
+        binding.btnEntrar.isEnabled=false
+
+    }
+    private fun restaurar_espera() {
+        binding.animationEspera2.visibility=View.GONE
+        binding.btnEntrar.isEnabled=true
+        binding.btnEntrar.background.setTint(ContextCompat.getColor(this, R.color.naranja))
+    }
+
     ////------------------API-RESET-Retrofit------------------------------------------/////
     private fun getRetrofit(): Retrofit {
         val logging = HttpLoggingInterceptor()
@@ -89,20 +106,24 @@ class Login : AppCompatActivity() {
                         binding.entradaPws.text.toString()
                     )
                 val tokenObtenido: respuestaLogin? = call.body()
+                //--------------------Pasar a hilo principal
                 if (call.isSuccessful) {
-                    Looper.prepare()
-                    TokenEnviado(tokenObtenido)
-                    Looper.loop()
-                } else {
+                    withContext(Dispatchers.Main) {
+                        TokenEnviado(tokenObtenido)
+                    }
+                } else {//---------------si falla la interaccion con la api-------------------
                     if (call.code() == 400 || call.code() == 404 ) {
                         var jsonObject: JSONObject? = null
                         try {
                             jsonObject = JSONObject(call.errorBody()?.string())
                             val Codigo = jsonObject!!.getString("code")
                             val Errors = jsonObject!!.getString("error")
-                            Looper.prepare()
-                            ToasDeError(Codigo,Errors)
-                            Looper.loop()
+                            //Looper.prepare()
+                            withContext(Dispatchers.Main) {
+                                ToasDeError(Codigo,Errors)
+                            }
+                            //ToasDeError(Codigo,Errors)
+                            //Looper.loop()
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
@@ -134,7 +155,7 @@ class Login : AppCompatActivity() {
         editor.putString("usuario_key", binding.entradaUsuario.text.toString())
         editor.putString("pws_key", binding.entradaPws.text.toString())
         editor.apply()
-        //loadingdialog.dismissdialog()
+        restaurar_espera()
         val intento1 = Intent(this, MainActivity::class.java)
         startActivity(intento1)
     }
@@ -143,5 +164,12 @@ class Login : AppCompatActivity() {
     fun ToasDeError(code: String, error: String) {
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("$code $error")
+        restaurar_espera()
+        //binding.txtError.visibility=View.VISIBLE
+        if(error.equals("Invalid username/password.")){
+          binding.txtError.setText("$code usuario o contraseña incorrectos")
+        }else{
+            binding.txtError.setText("$code $error")
+        }
     }
 }

@@ -6,7 +6,8 @@
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/drawable/boton_redondo_n.xml" value="0.2405" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_login.xml" value="0.4" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_splash_screen.xml" value="0.1" />
+        <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_parametros.xml" value="0.20677083333333332" />
+        <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/activity_splash_screen.xml" value="0.264" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/fragment_ajustes.xml" value="0.20677083333333332" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/fragment_inicial.xml" value="0.4" />
         <entry key="..\:/Trabajo/proyectos/tesis INCUBA/app/src/main/res/layout/fragment_notificaciones.xml" value="0.20677083333333332" />
@@ -23,7 +24,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.4" />
+        <option name="scale" value="0.2" />
       </ProjectState>
     </option>
   </component>
