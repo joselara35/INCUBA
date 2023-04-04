@@ -3,6 +3,7 @@ package com.incuba.app.fragmentos
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +18,8 @@ import com.incuba.app.API.ApiService
 import com.incuba.app.API.datosIncuabdora
 import com.incuba.app.API.respuestaIncubadora
 import com.incuba.app.Adaptadores.adapterIncubadora
+import com.incuba.app.MainActivity
+import com.incuba.app.ParametrosActivity
 import com.incuba.app.auxiliar.MainFragmentActionListener
 import com.incuba.app.databinding.FragmentInicialBinding
 import com.orhanobut.logger.AndroidLogAdapter
@@ -161,6 +164,7 @@ class FragmentInicial : Fragment() {
                         override fun onItemClick(position: Int) {
                             //var nombre=lista_resp[position].nombre.toString()
                             //var rc=lista_resp[position].valor_rc.toString()
+                            startActivity(Intent(activity, ParametrosActivity::class.java))
                         }
                     })
                 }catch (Ex:Exception){
