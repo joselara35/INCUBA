@@ -8,6 +8,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -162,9 +163,10 @@ class FragmentInicial : Fragment() {
                     recycle_area.adapter = adapter
                     adapter!!.setOnItemClickListener(object: adapterIncubadora.onItemClickListener{
                         override fun onItemClick(position: Int) {
-                            //var nombre=lista_resp[position].nombre.toString()
+                            var IdIncuabdora=results[position].objectId.toString()
                             //var rc=lista_resp[position].valor_rc.toString()
                             startActivity(Intent(activity, ParametrosActivity::class.java))
+                            guardadId(IdIncuabdora)
                         }
                     })
                 }catch (Ex:Exception){
@@ -175,5 +177,12 @@ class FragmentInicial : Fragment() {
         })
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d(respuestaAPI);
+    }
+
+    private fun guardadId(idIncuabdora: String) {
+        val shareprefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val editor = shareprefs.edit()
+        editor.putString("idIncu_key", idIncuabdora)
+        editor.apply()
     }
 }
