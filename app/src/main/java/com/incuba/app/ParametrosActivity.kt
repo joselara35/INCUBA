@@ -4,17 +4,18 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import androidx.room.Room
+import com.google.android.material.snackbar.Snackbar
 import com.incuba.app.API.ApiService
 import com.incuba.app.API.respuestaIncubadora
 import com.incuba.app.API.respuestaParametros
+import com.incuba.app.Roombd.baseD
+import com.incuba.app.Roombd.notificaciones
 import com.incuba.app.databinding.ActivityLoginBinding
 import com.incuba.app.databinding.ActivityParametrosBinding
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONException
@@ -27,16 +28,26 @@ import java.util.concurrent.TimeUnit
 class ParametrosActivity : AppCompatActivity() {
 
     private lateinit var binding:ActivityParametrosBinding
+    var id_incubadora:String=""
+    private var job: Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityParametrosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //-------------------------------------------------------------
-        obtenerListaMenu()
+        //obtenerListaMenu()
+        // Iniciar la repetición del método obtenerListaMenu()
+        job = CoroutineScope(Dispatchers.Default).launch {
+            while (true) {
+                obtenerListaMenu()
+                delay(5000) // Repetir cada 5 segundos
+            }
+        }
         //------------------------------------------------------------
         binding.btnAtraas.setOnClickListener {
             onBackPressed()
+            job?.cancel()
         }
 
     }
@@ -60,11 +71,11 @@ class ParametrosActivity : AppCompatActivity() {
     }
     private fun obtenerListaMenu() {
         val shareprefs = PreferenceManager.getDefaultSharedPreferences(this)
-        val idIncubadora = shareprefs.getString("idIncu_key", "0")!!
+        id_incubadora = shareprefs.getString("idIncu_key", "0")!!
         try {
             CoroutineScope(Dispatchers.IO).launch {
                 val call: Response<respuestaParametros> = getRetrofit().create(ApiService::class.java)
-                    .getObtenerParametros("classes/parametros?where=%7B%20%22id_incubadora%22%3A%20%22${idIncubadora}%22%20%7D")
+                    .getObtenerParametros("classes/parametros?where=%7B%20%22id_incubadora%22%3A%20%22${id_incubadora}%22%20%7D")
                 val listaPara: respuestaParametros? = call.body()
                 if (call.isSuccessful) {
                     withContext(Dispatchers.Main) {
@@ -94,21 +105,37 @@ class ParametrosActivity : AppCompatActivity() {
 
     private fun listaParametros(listaPara: respuestaParametros) {
         Logger.addLogAdapter(AndroidLogAdapter())
-        var userID: String = listaPara!!.results[0].objectId
+        var userID: String = listaPara!!.results.last().objectId
         Logger.d(userID)
         Logger.d(listaPara?.results)
-        binding.textId.setText("Id de incubadora: $userID")
-        binding.textTemperatura.setText(listaPara!!.results[0].temperatura)
-        binding.textHumedad.setText(listaPara!!.results[0].humedad)
-        binding.textVolteo.setText(listaPara!!.results[0].volteos)
-        binding.textReloj.setText(listaPara!!.results[0].fecha)
-        binding.textRelojHu.setText(listaPara!!.results[0].fecha)
-        binding.textRelojVolteo.setText(listaPara!!.results[0].fecha)
+        binding.textId.setText("Id de incubadora: $id_incubadora")
+        binding.textTemperatura.setText(listaPara!!.results.last().temperatura)
+        binding.textHumedad.setText(listaPara!!.results.last().humedad)
+        binding.textVolteo.setText(listaPara!!.results.last().volteos)
+        binding.textReloj.setText(listaPara!!.results.last().fecha)
+        binding.textRelojHu.setText(listaPara!!.results.last().fecha)
+        binding.textRelojVolteo.setText(listaPara!!.results.last().fecha)
+        //guardarBDCache(listaPara)
     }
+
+    /*private fun guardarBDCache(listaPara: respuestaParametros) {
+        var dataBase: baseD = Room
+            .databaseBuilder(this, baseD::class.java, baseD.DATABASE_NAME)
+            .build()
+        CoroutineScope(Dispatchers.IO).launch {
+            dataBase.datosMedidosDao().insertListaParametros(listaPara)
+        }
+    }*/
+
 
     //----------Mostrar errores en las respuestas de API------------------------
     fun ToasDeError(code: String, error: String) {
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("$code $error")
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        // Detener la repetición del método obtenerListaMenu() cuando se destruye la actividad
+        job?.cancel()
     }
 }

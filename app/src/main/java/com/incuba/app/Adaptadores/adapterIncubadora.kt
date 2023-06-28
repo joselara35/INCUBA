@@ -47,7 +47,5 @@ class adapterIncubadora(val respuesta:List<datosIncuabdora>): RecyclerView.Adapt
         holder.texto_cilco.setText(resp.id_ciclo)
         holder.texto_ubicacion.setText(resp.ubicacion)
         holder.texto_numero.setText(resp.numero)
-
-
     }
 }
