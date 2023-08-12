@@ -158,6 +158,11 @@
               android:textColor="@color/naranjaClaro" />
         </LinearLayout>
 
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/lineChart_temp"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"></com.github.mikephil.charting.charts.LineChart>
+
       </LinearLayout>
     </androidx.cardview.widget.CardView>
 

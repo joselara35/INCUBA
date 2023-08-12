@@ -4,13 +4,23 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
 import android.preference.PreferenceManager
+import android.view.ViewGroup
 import androidx.room.Room
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.google.android.material.snackbar.Snackbar
 import com.incuba.app.API.ApiService
 import com.incuba.app.API.respuestaIncubadora
 import com.incuba.app.API.respuestaParametros
 import com.incuba.app.Roombd.baseD
 import com.incuba.app.Roombd.notificaciones
+import com.incuba.app.auxiliar.graficarData
 import com.incuba.app.databinding.ActivityLoginBinding
 import com.incuba.app.databinding.ActivityParametrosBinding
 import com.orhanobut.logger.AndroidLogAdapter
@@ -31,10 +41,14 @@ class ParametrosActivity : AppCompatActivity() {
     var id_incubadora:String=""
     private var job: Job? = null
 
+    private lateinit var lineChart: LineChart
+    private var scoreList = ArrayList<graficarData>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityParametrosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        lineChart = this.binding.lineChartTemp
         //-------------------------------------------------------------
         //obtenerListaMenu()
         // Iniciar la repetición del método obtenerListaMenu()
@@ -108,6 +122,7 @@ class ParametrosActivity : AppCompatActivity() {
         var userID: String = listaPara!!.results.last().objectId
         Logger.d(userID)
         Logger.d(listaPara?.results)
+        rellenar_datos(listaPara)
         binding.textId.setText("Id de incubadora: $id_incubadora")
         binding.textTemperatura.setText(listaPara!!.results.last().temperatura)
         binding.textHumedad.setText(listaPara!!.results.last().humedad)
@@ -116,6 +131,18 @@ class ParametrosActivity : AppCompatActivity() {
         binding.textRelojHu.setText(listaPara!!.results.last().fecha)
         binding.textRelojVolteo.setText(listaPara!!.results.last().fecha)
         //guardarBDCache(listaPara)
+    }
+
+    private fun rellenar_datos(results: respuestaParametros) {
+       var lista=results.results.takeLast(10)
+        scoreList.clear()
+        for(i in lista){
+            var valor:Float?=i.temperatura.toFloatOrNull()
+            var fecha:String?=i.fecha
+            scoreList.add(graficarData(fecha!!, valor!!))
+        }
+        contruirGrafico()
+        setDataToLineChart()
     }
 
     /*private fun guardarBDCache(listaPara: respuestaParametros) {
@@ -137,5 +164,71 @@ class ParametrosActivity : AppCompatActivity() {
         super.onDestroy()
         // Detener la repetición del método obtenerListaMenu() cuando se destruye la actividad
         job?.cancel()
+    }
+    ///--------------------------GRAFICAR DATOS--------------------------------------------------
+    private fun contruirGrafico() {
+        lineChart.axisLeft.setDrawGridLines(false)
+        val xAxis: XAxis = lineChart.xAxis
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
+
+        //remove right y-axis
+        lineChart.axisRight.isEnabled = false
+
+        //remove legend
+        lineChart.legend.isEnabled = false
+
+
+        //remove description label
+        lineChart.description.isEnabled = false
+
+
+        //add animation
+        lineChart.animateX(1000, Easing.EaseInSine)
+
+        // to draw label on xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        xAxis.valueFormatter = MyAxisFormatter()
+        xAxis.setDrawLabels(true)
+        xAxis.granularity = 1f
+        xAxis.labelRotationAngle = +90f
+    }
+    inner class MyAxisFormatter : IndexAxisValueFormatter() {
+
+        override fun getAxisLabel(value: Float, axis: AxisBase?): String {
+            val index = value.toInt()
+            return if (index < scoreList.size) {
+                scoreList[index].fecha
+            } else {
+                ""
+            }
+        }
+    }
+    private fun setDataToLineChart() {
+        //now draw bar chart with dynamic data
+        val entries: ArrayList<Entry> = ArrayList()
+
+        //scoreList = listener!!.getListRespuestas()
+
+        if(scoreList[0].score==0.0F){
+            binding.lineChartTemp.visibility= ViewGroup.GONE
+            //binding.textError.visibility=ViewGroup.VISIBLE
+        }else{
+            binding.lineChartTemp.visibility=ViewGroup.VISIBLE
+            //binding.textError.visibility=ViewGroup.GONE
+            //you can replace this data object with  your custom object
+            //------------Agregar datos a la Garfica-----------------------------------
+            for (i in scoreList.indices) {
+                val score = scoreList[i]
+                entries.add(Entry(i.toFloat(), score.score.toFloat()))
+            }
+
+            val lineDataSet = LineDataSet(entries, "")
+
+            val data = LineData(lineDataSet)
+            lineChart.data = data
+
+            lineChart.invalidate()
+        }
     }
 }
