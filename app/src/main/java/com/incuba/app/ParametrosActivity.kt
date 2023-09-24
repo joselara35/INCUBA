@@ -42,19 +42,22 @@ class ParametrosActivity : AppCompatActivity() {
     private var job: Job? = null
 
     private lateinit var lineChart: LineChart
+    private lateinit var lineChart_humedad: LineChart
     private var scoreList = ArrayList<graficarData>()
+    private var scoreListHumedad = ArrayList<graficarData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityParametrosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         lineChart = this.binding.lineChartTemp
+        lineChart_humedad=this.binding.lineChartHumedad
         //-------------------------------------------------------------
         //obtenerListaMenu()
         // Iniciar la repetición del método obtenerListaMenu()
         job = CoroutineScope(Dispatchers.Default).launch {
             while (true) {
-                obtenerListaMenu()
+                obtenerListaDatos()
                 delay(5000) // Repetir cada 5 segundos
             }
         }
@@ -83,7 +86,7 @@ class ParametrosActivity : AppCompatActivity() {
             .client(client)
             .build()
     }
-    private fun obtenerListaMenu() {
+    private fun obtenerListaDatos() {
         val shareprefs = PreferenceManager.getDefaultSharedPreferences(this)
         id_incubadora = shareprefs.getString("idIncu_key", "0")!!
         try {
@@ -117,12 +120,13 @@ class ParametrosActivity : AppCompatActivity() {
         }
     }
 
+    //obtener los datos de la lista
     private fun listaParametros(listaPara: respuestaParametros) {
         Logger.addLogAdapter(AndroidLogAdapter())
         var userID: String = listaPara!!.results.last().objectId
         Logger.d(userID)
         Logger.d(listaPara?.results)
-        rellenar_datos(listaPara)
+        rellenar_datos_temperatura(listaPara)
         binding.textId.setText("Id de incubadora: $id_incubadora")
         binding.textTemperatura.setText(listaPara!!.results.last().temperatura)
         binding.textHumedad.setText(listaPara!!.results.last().humedad)
@@ -133,16 +137,26 @@ class ParametrosActivity : AppCompatActivity() {
         //guardarBDCache(listaPara)
     }
 
-    private fun rellenar_datos(results: respuestaParametros) {
+    // rellenar la lista con los datos para construir el grafico de temperatura
+    private fun rellenar_datos_temperatura(results: respuestaParametros) {
        var lista=results.results.takeLast(10)
         scoreList.clear()
+        scoreListHumedad.clear()
+
         for(i in lista){
             var valor:Float?=i.temperatura.toFloatOrNull()
+            var humedad:Float?=i.humedad.toFloatOrNull()
             var fecha:String?=i.fecha
             scoreList.add(graficarData(fecha!!, valor!!))
+            scoreListHumedad.add(graficarData(fecha!!,humedad!!))
         }
+        //-------para la temperatura---------
         contruirGrafico()
         setDataToLineChart()
+        //--------para la
+        // humedad--------------
+        contruirGraficoHumedad()
+        setDataToLineChartHumedad()
     }
 
     /*private fun guardarBDCache(listaPara: respuestaParametros) {
@@ -215,8 +229,7 @@ class ParametrosActivity : AppCompatActivity() {
             //binding.textError.visibility=ViewGroup.VISIBLE
         }else{
             binding.lineChartTemp.visibility=ViewGroup.VISIBLE
-            //binding.textError.visibility=ViewGroup.GONE
-            //you can replace this data object with  your custom object
+
             //------------Agregar datos a la Garfica-----------------------------------
             for (i in scoreList.indices) {
                 val score = scoreList[i]
@@ -229,6 +242,61 @@ class ParametrosActivity : AppCompatActivity() {
             lineChart.data = data
 
             lineChart.invalidate()
+        }
+    }
+
+    //---------------------------grafico de humedad---------------------
+    private fun contruirGraficoHumedad() {
+        lineChart_humedad.axisLeft.setDrawGridLines(false)
+        val xAxis: XAxis = lineChart_humedad.xAxis
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawAxisLine(false)
+
+        //remove right y-axis
+        lineChart_humedad.axisRight.isEnabled = false
+
+        //remove legend
+        lineChart_humedad.legend.isEnabled = false
+
+
+        //remove description label
+        lineChart_humedad.description.isEnabled = false
+
+
+        //add animation
+        lineChart_humedad.animateX(1000, Easing.EaseInSine)
+
+        // to draw label on xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM_INSIDE
+        xAxis.valueFormatter = MyAxisFormatter()
+        xAxis.setDrawLabels(true)
+        xAxis.granularity = 1f
+        xAxis.labelRotationAngle = +90f
+    }
+    private fun setDataToLineChartHumedad() {
+        //now draw bar chart with dynamic data
+        val entries: ArrayList<Entry> = ArrayList()
+
+        //scoreList = listener!!.getListRespuestas()
+
+        if(scoreListHumedad[0].score==0.0F){
+            binding.lineChartHumedad.visibility= ViewGroup.GONE
+            //binding.textError.visibility=ViewGroup.VISIBLE
+        }else{
+            binding.lineChartHumedad.visibility=ViewGroup.VISIBLE
+
+            //------------Agregar datos a la Garfica-----------------------------------
+            for (i in scoreListHumedad.indices) {
+                val score = scoreListHumedad[i]
+                entries.add(Entry(i.toFloat(), score.score.toFloat()))
+            }
+
+            val lineDataSet = LineDataSet(entries, "")
+
+            val data = LineData(lineDataSet)
+            lineChart_humedad.data = data
+
+            lineChart_humedad.invalidate()
         }
     }
 }
