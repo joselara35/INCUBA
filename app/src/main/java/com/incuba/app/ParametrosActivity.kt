@@ -52,7 +52,7 @@ class ParametrosActivity : AppCompatActivity() {
         setContentView(binding.root)
         lineChart = this.binding.lineChartTemp
         lineChart_humedad=this.binding.lineChartHumedad
-        //-------------------------------------------------------------
+        //---------------------1----------------------------------------
         //obtenerListaMenu()
         // Iniciar la repetición del método obtenerListaMenu()
         job = CoroutineScope(Dispatchers.Default).launch {
