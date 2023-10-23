@@ -55,4 +55,13 @@ interface ApiService {
    // suspend fun getObtenerParametros(@Query("where") id_incubadora: String): Response<respuestaParametros>
     @GET
     suspend fun getObtenerParametros(@Url url: String): Response<respuestaParametros>
+    //----->>>>>>GET-------Obtener datos de las incubadoras-------------------------<<<<<<<<
+    @Headers(
+        "accept: application/json",
+        "X-Parse-Application-Id: 8YUoulxckhk5MxlKfG4vK2P9GNOShPAUM0ZEG991",
+        "X-Parse-REST-API-Key: GBc1zmcJWs9iyCzq8AsOcjlWJJnpTrhDdOPzKfUy",
+        "X-Parse-Revocable-Session: 1"
+    )
+    @GET("classes/ciclos")
+    suspend fun getObtenerCiclos (): Response<respuestaCiclos>
 }

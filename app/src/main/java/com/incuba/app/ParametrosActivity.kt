@@ -1,5 +1,6 @@
 package com.incuba.app
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -20,6 +21,7 @@ import com.incuba.app.API.respuestaIncubadora
 import com.incuba.app.API.respuestaParametros
 import com.incuba.app.Roombd.baseD
 import com.incuba.app.Roombd.notificaciones
+import com.incuba.app.auxiliar.alertaNotificacion
 import com.incuba.app.auxiliar.graficarData
 import com.incuba.app.databinding.ActivityLoginBinding
 import com.incuba.app.databinding.ActivityParametrosBinding
@@ -149,6 +151,14 @@ class ParametrosActivity : AppCompatActivity() {
             var fecha:String?=i.fecha
             scoreList.add(graficarData(fecha!!, valor!!))
             scoreListHumedad.add(graficarData(fecha!!,humedad!!))
+            ///--------------------------------alerta notificacion----------------------
+            alertaNotificacion(
+                id_incu = i.id_incubadora,
+                temp = valor,
+                humedad = humedad,
+                fecha = i.fecha,
+                context = this
+            )
         }
         //-------para la temperatura---------
         contruirGrafico()

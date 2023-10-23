@@ -1,5 +1,6 @@
 package com.incuba.app
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -14,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.incuba.app.Roombd.baseD
 import com.incuba.app.Roombd.notificaciones
 import com.incuba.app.auxiliar.MainFragmentActionListener
+import com.incuba.app.auxiliar.alertaNotificacion
 import com.incuba.app.databinding.ActivityMainBinding
 import com.incuba.app.fragmentos.FragmentAjustes
 import com.incuba.app.fragmentos.FragmentInicial
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity(), MainFragmentActionListener {
         }
         //----------------prueba notififaciones-------------------------------
         binding.textUser.setOnClickListener {
-            var dataBase: baseD = Room
+            /*var dataBase: baseD = Room
                 .databaseBuilder(this, baseD::class.java, baseD.DATABASE_NAME)
                 .build()
             CoroutineScope(Dispatchers.IO).launch {
@@ -93,7 +95,11 @@ class MainActivity : AppCompatActivity(), MainFragmentActionListener {
                 withContext(Dispatchers.Main) {
                     Snackbar.make(it, "Notificacion agregada", Snackbar.LENGTH_LONG).show()
                     }
-                }
+                }*/
+            var t:Float= 35.4F
+            var h:Float= 60.4F
+
+            alertaNotificacion("La republica1",t,h,"1/5/23",this)
             }
 
     }

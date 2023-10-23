@@ -14,6 +14,7 @@ data class notificaciones(
     @NonNull
     var estado:String,
     var tipo:String,
+    var incubadora:String,
     @NonNull
     var fecha:String
 )
