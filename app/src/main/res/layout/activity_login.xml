@@ -101,12 +101,11 @@
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/editext_fondo"
                 android:ems="10"
-                android:gravity="center"
                 android:fontFamily="@font/bellmtbold"
+                android:gravity="center"
                 android:hint="Usuario"
                 android:inputType="textPersonName"
                 android:padding="5dp"
-                android:text="jose"
                 android:paddingStart="10dp"
                 android:textColor="@color/black"
                 android:textColorHint="#B5B4B4" />
@@ -126,7 +125,6 @@
                 android:padding="5dp"
                 android:paddingStart="10dp"
                 android:rotationY="-1"
-                android:text="Cuba.2023*"
                 android:textColor="@color/black"
                 android:textColorHint="#B5B4B4" />
 

@@ -90,6 +90,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/btn_admin_usuarios"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginHorizontal="10dp"
@@ -99,7 +100,6 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/btn_admin_usuarios"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -126,6 +126,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/btn_admin_ciclos"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_marginHorizontal="10dp"
@@ -135,7 +136,7 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/btn_admin_ciclos"
+
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
@@ -162,6 +163,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/btn_admin_incuabdora"
                 android:layout_width="match_parent"
                 android:layout_height="70dp"
                 android:layout_marginHorizontal="10dp"
@@ -171,7 +173,6 @@
                 app:cardElevation="5dp">
 
                 <LinearLayout
-                    android:id="@+id/btn_admin_incuabdora"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"

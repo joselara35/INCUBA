@@ -17,6 +17,9 @@
         android:theme="@style/Theme.INCUBA"
         tools:targetApi="31">
         <activity
+            android:name=".Historial"
+            android:exported="false" />
+        <activity
             android:name=".Administrar_incubadora"
             android:exported="false" />
         <activity

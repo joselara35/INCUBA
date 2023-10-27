@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
+import android.preference.PreferenceManager
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,7 +48,7 @@ class FragmentAjustes : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         //---------------------------acciones--------------------------
-
+        incial()
         binding.btnAdminCiclos.setOnClickListener {
             startActivity(Intent(activity, Administrar_ciclos::class.java))
         }
@@ -61,6 +62,24 @@ class FragmentAjustes : Fragment() {
             borrar_notificaciones()
         }
     }
+
+    private fun incial() {
+        val shareprefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val nombre = shareprefs.getString("nombre_key", "0")!!
+        val empresa = shareprefs.getString("empresa_key", "0")!!
+        val rol = shareprefs.getString("rol_key", "0")!!
+        val token = shareprefs.getString("token_key", "0")!!
+        if(rol.equals("Técnico")){
+            binding.btnAdminCiclos.visibility=View.VISIBLE
+            binding.btnAdminUsuarios.visibility=View.VISIBLE
+            binding.btnAdminIncuabdora.visibility=View.VISIBLE
+        }else{
+            binding.btnAdminCiclos.visibility=View.GONE
+            binding.btnAdminUsuarios.visibility=View.GONE
+            binding.btnAdminIncuabdora.visibility=View.GONE
+        }
+    }
+
     private fun borrar_notificaciones() {
         var dataBase: baseD = Room
             .databaseBuilder(requireContext(), baseD::class.java, baseD.DATABASE_NAME)

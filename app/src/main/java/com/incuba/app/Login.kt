@@ -41,7 +41,6 @@ class Login : AppCompatActivity() {
         binding.txtVersion.setText("Versión $versionName")
         //---------------------------------------------------------------
         binding.btnEntrar.setOnClickListener {
-            //startActivity(Intent(this,MainActivity::class.java))
             val connectivityManager =
                 getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val networkInfo = connectivityManager.activeNetworkInfo
@@ -50,20 +49,14 @@ class Login : AppCompatActivity() {
             if (networkInfo != null && networkInfo.isConnected) {
                 var correo = binding.entradaUsuario.text.toString()
                 if (binding.entradaUsuario.text.isEmpty() || binding.entradaPws.text.isEmpty()) {
-                    //Toast.makeText(this, "Entre los datos requeridos", Toast.LENGTH_SHORT).show()
-                    //mensajeDialog.startMenssageDialogo("Entre los datos requeridos")
                     Toast.makeText(this,"Entre los datos requeridos",Toast.LENGTH_SHORT).show()
-
                 } else {
                         establecer_espera()
-                        LoginApi()
+                    autenticarUsuario()
                 }
             } else {
-                //toastExt("Active el Internet para seguir")
-                //mensajeDialog.startMenssageDialogo("Active el Internet para seguir")
                 Toast.makeText(this,"Active el Internet para seguir",Toast.LENGTH_SHORT).show()
             }
-
         }
     }
 
@@ -71,7 +64,6 @@ class Login : AppCompatActivity() {
         binding.animationEspera2.visibility=View.VISIBLE
         binding.btnEntrar.background.setTint(ContextCompat.getColor(this, R.color.grisOscuro))
         binding.btnEntrar.isEnabled=false
-
     }
     private fun restaurar_espera() {
         binding.animationEspera2.visibility=View.GONE
@@ -96,9 +88,8 @@ class Login : AppCompatActivity() {
             .client(client)
             .build()
     }
-    private fun LoginApi() {
+    private fun autenticarUsuario() {
         try {
-
             CoroutineScope(Dispatchers.IO).launch {
                 val call: Response<respuestaLogin> = getRetrofit().create(ApiService::class.java)
                     .getLogin(
@@ -106,7 +97,7 @@ class Login : AppCompatActivity() {
                         binding.entradaPws.text.toString()
                     )
                 val tokenObtenido: respuestaLogin? = call.body()
-                //--------------------Pasar a hilo principal
+                //--------------------Pasar a hilo principal--------------------------
                 if (call.isSuccessful) {
                     withContext(Dispatchers.Main) {
                         TokenEnviado(tokenObtenido)
@@ -118,18 +109,14 @@ class Login : AppCompatActivity() {
                             jsonObject = JSONObject(call.errorBody()?.string())
                             val Codigo = jsonObject!!.getString("code")
                             val Errors = jsonObject!!.getString("error")
-                            //Looper.prepare()
                             withContext(Dispatchers.Main) {
                                 ToasDeError(Codigo,Errors)
                             }
-                            //ToasDeError(Codigo,Errors)
-                            //Looper.loop()
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
                     }
                 }
-
             }
         } catch (e: Exception) {
             Toast.makeText(this,"Error de conexión con el servidor",Toast.LENGTH_SHORT).show()
@@ -140,8 +127,6 @@ class Login : AppCompatActivity() {
         if (BuildConfig.BUILD_TYPE == "debug") {
             Logger.addLogAdapter(AndroidLogAdapter())
             var userID: String = tokenObtenido!!.objectId
-            var email: String = tokenObtenido!!.email
-            var rol: String = tokenObtenido!!.rol
             Logger.d(userID)
             Logger.d(tokenObtenido?.sessionToken)
         }
@@ -165,7 +150,6 @@ class Login : AppCompatActivity() {
         Logger.addLogAdapter(AndroidLogAdapter())
         Logger.d("$code $error")
         restaurar_espera()
-        //binding.txtError.visibility=View.VISIBLE
         if(error.equals("Invalid username/password.")){
           binding.txtError.setText("$code usuario o contraseña incorrectos")
         }else{
